@@ -1,10 +1,3 @@
-<p align="center">
- <img src="_images-json-javascript-object-notation/json-logo-1.png" alt="JSON - JavaScript Object Notation" title="JSON - JavaScript Object Notation" width="200" />
-</p>
-
-<p align="center">
- <img src="_images-json-javascript-object-notation/json-logo-2.png" alt="JSON - JavaScript Object Notation" title="JSON - JavaScript Object Notation" width="400" />
-</p>
 
 JSON JavaScript Object Notation
 =====================
@@ -14,7 +7,6 @@ Welcome
 
 About the Course/Tutorial
 ---------------------
-Hi All, I'm **`Dinanath Jayaswal, Senior UI/Web Developer and Adobe Certified Expert Professional`**, I wanna welcome you to `JSON (JavaScript Object Notation) Crash Course for Beginners`. This course/tutorial will give you a complete understanding of JSON syntax, data types, and formatting.
 
 This course will share the under the hood basic understanding of JSON using the practical implementation in your web development project. Here we will start from scratch/basics & go to a higher level very quickly.
 
