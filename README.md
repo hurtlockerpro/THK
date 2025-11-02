@@ -1,2 +1,3 @@
-# THK
-loengud
+# Hajusrakenduste alused
+
+## JSON praktiline osa
