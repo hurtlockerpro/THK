@@ -14,9 +14,9 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 //const CLIENT_REDIRECT_URI = "http://localhost:3000";
-const CLIENT_REDIRECT_URI = "http://localhost:3000/week_4";
+const CLIENT_REDIRECT_URI = "http://localhost:3000";
 const GOOGLE_TOKEN_URI = 'https://oauth2.googleapis.com/token'
-const SERVER_REDIRECT_URI = 'http://localhost:' + PORT
+const SERVER_REDIRECT_URI = 'http://localhost:3000'
 
 app.get("/api/auth/url", (req, res) => {
   const authUrl =
@@ -36,13 +36,16 @@ app.get("/api/auth/url", (req, res) => {
   res.json({ url: authUrl });
 });
 
-app.post('api/auth/token', async (req, res) => {
+app.post('/api/auth/token', async (req, res) => {
     const body = req.body
-    const code = body.code
+    const _code = body.code
+
+    console.log(_code);
+    
 
     // code != null 
     // code != ''
-    if (!code)
+    if (!_code)
     {
         return res.status(400).json({
             error: 'Please enter the code'
@@ -53,16 +56,20 @@ app.post('api/auth/token', async (req, res) => {
     try {
         const tokenResponse = await axios.post(GOOGLE_TOKEN_URI, 
             {
-                code,
+                code: _code,
                 client_id: GOOGLE_CLIENT_ID,
                 client_secret: GOOGLE_CLIENT_SECRET,
                 redirect_uri: SERVER_REDIRECT_URI,
                 grant_type: 'authorization_code'
             })
-        console.log(tokenResponse);
+        console.log('tokenResponse', tokenResponse);
             
 
     } catch (error){
+      console.log(error.response);
+      //console.log(error.request);
+      
+        console.log('Error to get token: ', error.message);
         return res.status(500).json({
             error: 'Server failed to get google jwt key'
         })

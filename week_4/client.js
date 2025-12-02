@@ -24,6 +24,7 @@ async function loginWithGoogle() {
 }
 
 // listen to window , get href , find ?code=
+
 window.addEventListener('DOMContentLoaded', () => {
   
   const url = window.location.search
@@ -41,14 +42,23 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 
+
 async function sendToServer(_code){
+
+  //_code = '4/0Ab32j90BTKnd6DZ-uJapz5-FRRSz5odf3rijg8pyy297APMnLX7zsgL4tQUfGqWeCe7QBA'
+
+  console.log(_code);
+  
   const response = await fetch(serverHost + '/api/auth/token', {
-    method: 'POST',
+    method: "POST",
     headers: {
       'Content-type': 'application/json'
     },
     body: JSON.stringify({ code: _code})
   })
+
+  console.log(response);
+  
 
   if (!response.ok){
     throw new Error('Server is failing')
