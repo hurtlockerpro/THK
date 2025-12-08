@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="JWT Authentication Demo for Educational Purposes">
+  <title>JWT Authentication Demo</title>
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8d1fc 0%, #f5576c 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Main Container */
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Badge */
+    .jwt-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 10px;
+      text-transform: uppercase;
+    }
+
+    /* Credentials Box */
+    .credentials {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      border-left: 4px solid #ffc107;
+    }
+
+    .credentials strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #856404;
+      font-size: 14px;
+    }
+
+    .credentials p {
+      margin: 5px 0;
+      color: #856404;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #f5576c;
+      box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+    }
+
+    /* Button Styles */
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    button.secondary:hover {
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Message Box */
+    .message {
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .message.success {
+      background: #efe;
+      color: #2d8659;
+      border: 1px solid #cfc;
+    }
+
+    /* Info Box */
+    .info-box {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .info-box strong {
+      color: #f5576c;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    /* Token Info Box */
+    .token-info {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      border-left: 4px solid #f5576c;
+      font-size: 12px;
+    }
+
+    .token-info p {
+      margin: 8px 0;
+      color: #555;
+      word-break: break-all;
+    }
+
+    .token-info strong {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .token-info span {
+      color: #f5576c;
+      font-weight: 500;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Profile Info */
+    .profile-info {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border-left: 4px solid #f5576c;
+    }
+
+    .profile-info p {
+      margin: 12px 0;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .profile-info strong {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .profile-info span {
+      color: #f5576c;
+      font-weight: 500;
+    }
+
+    /* Demo Tips */
+    .demo-tips {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      font-size: 12px;
+      border-left: 4px solid #2196f3;
+      color: #0d47a1;
+      line-height: 1.8;
+    }
+
+    .demo-tips strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .demo-tips code {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      color: #d32f2f;
+      font-size: 11px;
+    }
+
+    /* Hidden Class */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Button Row */
+    .button-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .button-row button {
+      flex: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container { padding: 30px 20px; }
+      h1 { font-size: 24px; }
+      .button-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- ==================== LOGIN VIEW ==================== -->
+    <div id="loginView">
+      <h1>🔑 JWT Auth Demo<span class="jwt-badge">Stateless</span></h1>
+      <p class="subtitle">Educational demonstration of JWT (JSON Web Token) authentication</p>
+      
+      <!-- Demo Credentials -->
+      <div class="credentials">
+        <strong>📝 Demo Credentials:</strong>
+        <p>👤 Username: <strong>student</strong> | Password: <strong>demo123</strong></p>
+      </div>
+      
+      <!-- Message Display -->
+      <div id="message" class="message"></div>
+      
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            placeholder="Enter username"
+            required 
+            autocomplete="username"
+            autofocus
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter password"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+        
+        <button type="submit">Login</button>
+      </form>
+      
+      <!-- How JWT Works -->
+      <div class="info-box">
+        <strong>🎓 How JWT Authentication Works:</strong>
+        1. Client sends credentials to server<br>
+        2. Server validates and creates JWT token<br>
+        3. Token sent to client (stored in localStorage)<br>
+        4. Client includes token in Authorization header<br>
+        5. Server validates token signature for each request<br>
+        6. No server-side session storage needed!
+      </div>
+
+      <!-- Demo Tips -->
+      <div class="demo-tips">
+        <strong>💡 Demo Tips for Students:</strong>
+        • Open DevTools (F12) → <strong>Network</strong> tab<br>
+        • Check <strong>Authorization</strong> header in requests<br>
+        • Open <strong>Application</strong> → <strong>Local Storage</strong> to see token<br>
+        • Console: <code>quickFill()</code> to auto-fill form<br>
+        • Console: <code>decodeToken()</code> to decode JWT payload
+      </div>
+    </div>
+
+    <!-- ==================== PROFILE VIEW ==================== -->
+    <div id="profileView" class="hidden">
+      <h1>✅ Authenticated<span class="jwt-badge">JWT</span></h1>
+      <p class="subtitle">You are authenticated with a JWT token</p>
+      
+      <!-- Profile Information -->
+      <div class="profile-info">
+        <p><strong>👤 Username:</strong> <span id="profileUsername">-</span></p>
+        <p><strong>🆔 User ID:</strong> <span id="profileUserId">-</span></p>
+        <p><strong>👔 Role:</strong> <span id="profileRole">-</span></p>
+      </div>
+
+      <!-- Token Information -->
+      <div class="token-info">
+        <p><strong>🔑 Token Preview:</strong><br>
+        <span id="tokenPreview">-</span></p>
+        <p><strong>📅 Issued:</strong> <span id="tokenIssued">-</span></p>
+        <p><strong>⏰ Expires:</strong> <span id="tokenExpires">-</span></p>
+      </div>
+      
+      <!-- Action Buttons -->
+      <button id="logoutBtn">Logout</button>
+      
+      <div class="button-row">
+        <button id="refreshBtn" class="secondary">🔄 Refresh Token</button>
+        <button id="adminBtn" class="secondary" style="display: none;">👑 Admin Panel</button>
+      </div>
+      
+      <!-- JWT Info -->
+      <div class="info-box">
+        <strong>🔒 JWT Security Details:</strong>
+        • Token contains user data (not encrypted!)<br>
+        • Token signed with secret key<br>
+        • Signature prevents tampering<br>
+        • Server validates signature on each request<br>
+        • No database lookup needed (stateless)<br>
+        • Token expires after 30 minutes
+      </div>
+
+      <!-- Experiment Tips -->
+      <div class="demo-tips">
+        <strong>🧪 Try These Experiments:</strong>
+        • Decode token: <code>decodeToken()</code> in console<br>
+        • Copy token from Local Storage to another browser<br>
+        • Modify token and see validation fail<br>
+        • Wait for token to expire (30 min)<br>
+        • Refresh token before it expires<br>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- External JavaScript File -->
+  <script src="jwt_client.js"></script>
+</body>
+</html>

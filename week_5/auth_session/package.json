@@ -1,0 +1,20 @@
+{
+  "name": "session-auth-demo",
+  "version": "1.0.0",
+  "description": "Educational demo of session-based authentication",
+  "main": "server.js",
+  "scripts": {
+    "start": "node auth_server.js",
+    "dev": "nodemon auth_server.js"
+  },
+  "keywords": ["authentication", "session", "express", "demo"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
