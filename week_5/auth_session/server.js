@@ -2,7 +2,8 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const cors = require("cors")
+const cors = require("cors");
+const { log } = require("console");
 
 const app = express();
 const PORT = 3001;
@@ -11,7 +12,7 @@ const PORT = 3001;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(cors({
-  origin: 'http://localhost:3000', // <-- IMPORTANT: Use your actual client origin
+  origin: 'http://localhost:3001', // <-- IMPORTANT: Use your actual client origin
   credentials: true
 }))
 app.use(express.static("public"))
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
   req.header("Access-Control-Allow-Origin", "http://localhost:3000")
   req.header("Access-Control-Allow-Method", "GET, POST, PUT, DELETE, OPTIONS")
   req.header("Access-Control-Allow-Headers", "Content-Type")
-  req.header("Access-Control-Allow-Credential", "true")
+  req.header("Access-Control-Allow-Credentials", "true")
   next()
 })*/
 
@@ -41,7 +42,8 @@ app.use(
     cookie: {
       secure: false, // no https
       maxAge: 1000 * 60 * 15,
-      httpOnly: false // <-- IMPORTANT temporary
+      //sameSite: "none",
+      //httpOnly: false // <-- IMPORTANT temporary
     }
   })
 )
@@ -61,7 +63,7 @@ app.post("/api/login", (req, res) => {
         // user - found
         req.session.userId = user.id
         req.session.username = user.username
-        console.log('user ' + user.username + ' logged in');
+        console.log('user "' + user.username + '" logged in');
         res.json({
             success: true,
             username: user.username,
@@ -74,10 +76,55 @@ app.post("/api/login", (req, res) => {
     }
 });
 
+const isAuthenticated = (req, res, next) => {
+  console.log(req.session);
+  
+  if (req.session.userId){
+    next()
+  } else {
+    res.status(401).json( { error: "You are not authenticated!"})
+  }
+}
+
+app.get('/api/profile', isAuthenticated, (req, res) => {
+  
+  console.log('---');
+  
+  console.log('Profile accesased by ' + req.session.username);
+  res.json({
+    username: req.session.username,
+    userId: req.session.userId,
+    sessionID: req.sessionID
+  })
+  
+})
 
 app.post("/api/logout", (req, res) => {
-
+  const username = req.session.username
+  req.session.destroy(err => {
+    if (err)
+    {
+      res.status(500).json({error: 'could not logout'})
+    }
+    console.log('User logged out: ' + username );
+    res.json({success: true})
+    
+  }) 
 });
+
+
+app.get('/api/session', (req, res) => {
+  if (req.session.userId) {
+    res.json({
+      authenticated: true,
+      username: req.session.username 
+    })
+  } else {
+     res.json({
+      authenticated: false
+    })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`\n=================================`);

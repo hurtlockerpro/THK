@@ -1,7 +1,18 @@
 const usernameInput = document.getElementById('username')
 const passwordInput = document.getElementById('password')
 
+const profileView = document.getElementById('profileView')
+console.log(profileView);
+
+const profileUsername = document.getElementById('profileUsername')
+const profileUserId = document.getElementById('profileUserId')
+const profileSessionId = document.getElementById('profileSessionId')
+
+
 const loginForm = document.getElementById('loginForm')
+
+const hostPort = 3001
+const hostName = 'http://localhost:' + hostPort
 
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault()
@@ -23,7 +34,7 @@ loginForm.addEventListener('submit', async (event) => {
     //console.log('_username', _username, '_password', _password);
 
     try {
-        const response = await fetch('http://localhost:3001/api/login', 
+        const response = await fetch('/api/login', 
         {
             method: "POST",
             headers: {
@@ -39,10 +50,31 @@ loginForm.addEventListener('submit', async (event) => {
         console.log('success', data.success);
         console.log('username', data.username);
         console.log('sessionID', data.sessionID);
+        setTimeout(loadProfile(), 2000)
+        
 
     }
     catch (error)
     {}
-
-
 })
+
+
+async function loadProfile() {
+    try {
+        const response = await fetch('/api/profile', {
+            method: 'GET',
+            credentials: "include"
+        })
+
+        if (response.ok)
+        {
+            const data = await response.json()
+            console.log('Data: ', data);
+
+            profileView.classList.remove('hidden')
+
+        }
+    } catch(error){
+
+    }
+}
