@@ -71,7 +71,13 @@ async function loadProfile() {
             const data = await response.json()
             console.log('Data: ', data);
 
+            profileUserId.innerHTML = data.userId
+            profileUsername.innerHTML = data.username
+            profileSessionId.innerHTML = data.sessionID
+
             profileView.classList.remove('hidden')
+
+
 
         }
     } catch(error){
