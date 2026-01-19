@@ -1,0 +1,24 @@
+{
+  "name": "express-swagger-demo",
+  "version": "1.0.0",
+  "description": "Simple Express.js API with Swagger/OpenAPI documentation for students",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "express",
+    "swagger",
+    "openapi",
+    "demo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "cors": "^2.8.5"
+  }
+}
