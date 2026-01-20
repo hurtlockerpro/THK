@@ -19,7 +19,94 @@ let students = [
 ];
 
 // Swagger/OpenAPI configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Student Management API',
+      version: '1.0.0',
+      description: 'API for managing students'
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: 'Development server'
+      }
+    ],
+    tags: [
+      {
+        name: 'Students',
+        description: 'API for students in the system'
+      },
+      { 
+        name: 'Health',
+        description: 'API for health check'
+      }
+    ],
+  },
+  apis: ['./server.js']
+};
 
+const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   Student: 
+ *    type: object
+ *    required:
+ *     - name
+ *     - email
+ *    properties:
+ *     id:
+ *      type: integer
+ *      description: The auto-generated id of the student
+ *     name:
+ *      type: string
+ *      description: The name of the student
+ *     email:
+ *      type: string
+ *      description: The email of the student
+ *      example: john@example.com
+ *     grade:
+ *      type: string
+ *      description: The grade of the student
+ *      example: A
+ *   Error:
+ *    type: object
+ *    properties:
+ *     message:
+ *      type: string
+ *      description: Error detailed message
+ */
+
+
+
+
+
+
+/**
+ * @swagger
+ * /:
+ *  get:
+ *   tags: [Health]
+ *   summary: Welcome message
+ *   responses:
+ *    200:  
+ *     description: Welcome message
+ *     content:
+ *      application/json:
+ *        schema:
+ *          type: object
+ *          properties:
+ *            message:
+ *              type: string
+ *            documentation:
+ *              type: string
+ */
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to Student Management API',
@@ -27,10 +114,60 @@ app.get('/', (req, res) => {
   });
 });
 
+
+/**
+ * @swagger
+ * /api/students:
+ *  get:
+ *    tags: [Students]
+ *    summary: Retrieve a list of students
+ *    responses:
+ *     200:
+ *      description: A list of students
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: array
+ *         items:
+ *          $ref: '#/components/schemas/Student'
+ *     404:
+ *      description: No students found
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/components/schemas/Error'
+ */
 app.get('/api/students', (req, res) => {
   res.json(students);
 });
 
+/**
+ * @swagger
+ * /api/students/{id}:
+ *  get:
+ *   tags: [Students]
+ *   summary: Get a student by ID
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      required: true
+ *      schema:
+ *       type: integer
+ *      description: The student ID
+ *   responses:
+ *    200:
+ *     description: Exact student data
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Student'
+ *    404:
+ *     description: Student not found
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Error'
+ */
 app.get('/api/students/:id', (req, res) => {
   const student = students.find(s => s.id === parseInt(req.params.id));
   

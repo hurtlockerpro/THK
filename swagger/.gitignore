@@ -23,3 +23,5 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+
+package-lock.json
